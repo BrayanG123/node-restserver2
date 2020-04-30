@@ -4,10 +4,11 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore'); 
 
 const Usuario = require('../models/usuario'); 
+const { verificarToken, verificarADMIN_ROLE } = require('../middlewares/autenticacion'); 
 
 const app = express();
 
-app.get('/usuario', function (req, res) {
+app.get('/usuario', verificarToken, (req, res) => {
 
     //*** los parametros opcionales caen dentro de un objeto llamado query que esta dentro del req obviamente
     let desde = req.query.desde || 0;
@@ -41,7 +42,7 @@ app.get('/usuario', function (req, res) {
 
 });
 
-app.post('/usuario', function (req, res) {
+app.post('/usuario', [verificarToken,verificarADMIN_ROLE], function (req, res) {
 
     let body = req.body;
 
@@ -71,10 +72,11 @@ app.post('/usuario', function (req, res) {
 
 });
 
-app.put('/usuario/:id', function (req, res) {
+app.put('/usuario/:id', [verificarToken,verificarADMIN_ROLE], function (req, res) {
 
     let id = req.params.id;
-    let body = _.pick(req.body, ['nombre','email','img','role','estado',]);
+    let body = _.pick(req.body, ['nombre','email','img','role','estado',]);//sin middleware
+    
 
     //lo malo del andUpdate es q no retorna el documento actualizado pero se lo soluciona
     //poniendo el 3er argumento de las opciones. 
@@ -96,7 +98,7 @@ app.put('/usuario/:id', function (req, res) {
 
 });
 
-app.delete('/usuario/:id', function (req, res) {
+app.delete('/usuario/:id', [verificarToken,verificarADMIN_ROLE], function (req, res) {
 
     let id = req.params.id;
     
