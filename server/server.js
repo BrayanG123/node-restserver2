@@ -1,10 +1,10 @@
 require('./config/config'); //para obtener el puerto
-const express = require('express');
 
+const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path'); 
 
 const app = express();
-
 
 var bodyParser = require('body-parser');
 
@@ -12,6 +12,10 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
+
+
+//habilitar la carpeta public (index.html)
+app.use( express.static( path.resolve( __dirname, '../public' ) ) );
 
  
 // Condiguracion global de rutas (usar las rutas)
